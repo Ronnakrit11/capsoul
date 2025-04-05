@@ -13,8 +13,8 @@ const Logo = ({ className }: Props) => {
       <Image 
         src="/logo.png" 
         alt="Fifty9 Logo"
-        width={100}
-        height={100}
+        width={1000}
+        height={1000}
         className={cn("w-auto h-12 object-contain", className)}
         priority
       />
