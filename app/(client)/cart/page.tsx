@@ -6,6 +6,14 @@ import NoAccessToCart from "@/components/NoAccessToCart";
 import PriceFormatter from "@/components/PriceFormatter";
 import QuantityButtons from "@/components/QuantityButtons";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -20,7 +28,7 @@ import { Heart, ShoppingBag, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import paypalLogo from "@/images/paypalLogo.png";
 import {
   createCheckoutSession,
@@ -30,6 +38,7 @@ import {
 const CartPage = () => {
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showResetDialog, setShowResetDialog] = useState(false);
   const { isSignedIn } = useAuth();
   const {
     deleteCartProduct,
@@ -49,12 +58,11 @@ const CartPage = () => {
   const cartProducts = getGroupedItems();
 
   const handleResetCart = () => {
-    const confirmed = window.confirm("Are you sure to reset your Cart?");
-    if (confirmed) {
-      resetCart();
-      toast.success("Your cart reset successfully!");
-    }
+    resetCart();
+    setShowResetDialog(false);
+    toast.success("Your cart has been reset successfully!");
   };
+
   const handleDeleteProduct = (id: string) => {
     deleteCartProduct(id);
     toast.success("Product deleted successfully!");
@@ -176,7 +184,7 @@ const CartPage = () => {
                       );
                     })}
                     <Button
-                      onClick={handleResetCart}
+                      onClick={() => setShowResetDialog(true)}
                       className="m-5 font-semibold"
                       variant="destructive"
                     >
@@ -284,6 +292,33 @@ const CartPage = () => {
       ) : (
         <NoAccessToCart />
       )}
+
+      <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-red-600">Reset Shopping Cart</DialogTitle>
+            <DialogDescription className="text-base pt-2">
+              Are you sure you want to reset your shopping cart? 
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowResetDialog(false)}
+              className="flex-1 sm:flex-none"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleResetCart}
+              className="flex-1 sm:flex-none"
+            >
+              Reset Cart
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
