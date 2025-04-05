@@ -9,14 +9,14 @@ interface Props {
 const data: Props[] = [
   {
     title: "Visit Us",
-    subtitle: "New Orlean, USA",
+    subtitle: "Nst , Thailand",
     icon: (
       <MapPin className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
   },
   {
     title: "Call Us",
-    subtitle: "+12 958 648 597",
+    subtitle: "+66 ",
     icon: (
       <Phone className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
@@ -30,7 +30,7 @@ const data: Props[] = [
   },
   {
     title: "Email Us",
-    subtitle: "tulos@gmail.com",
+    subtitle: "info@expert8-solution.com",
     icon: (
       <MapPin className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
