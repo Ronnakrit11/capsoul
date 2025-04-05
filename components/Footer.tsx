@@ -14,7 +14,7 @@ const Footer = () => {
         <FooterTop />
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <Logo>Fifty9</Logo>
+            <Logo />
             <p className="text-gray-600 text-sm">
             Where Luxurious Dreams Meet Premium Imported Bedding, Transforming Every Night into an Experience of Pure Comfort and Tranquility&quot;
             </p>

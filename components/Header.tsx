@@ -25,7 +25,7 @@ const Header = async () => {
         <HeaderMenu categories={categories} />
         <div className="w-auto md:w-1/3 flex items-center justify-center gap-2.5">
           <MobileMenu />
-          <Logo>Fifty9</Logo>
+          <Logo />
         </div>
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
           <SearchBar />
