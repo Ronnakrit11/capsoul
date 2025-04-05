@@ -30,7 +30,7 @@ const data: Props[] = [
   },
   {
     title: "Email Us",
-    subtitle: "info@expert8-solution.com",
+    subtitle: "info@expert8-solution@gmail.com",
     icon: (
       <MapPin className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
