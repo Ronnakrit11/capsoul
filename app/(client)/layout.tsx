@@ -13,8 +13,8 @@ const raleway = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Fifty9 Ecommerce app for shoppers",
-  description: "An Ecommerce app for education purposes",
+  title: "Fifty9 Ecommerce platform for shoppers",
+  description: "An Ecommerce platform for elite shoppers",
 };
 
 export default function RootLayout({
