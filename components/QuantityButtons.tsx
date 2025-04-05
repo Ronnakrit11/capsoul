@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useCartStore from "@/store";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 interface Props {
   product: Product;

@@ -1,7 +1,7 @@
 "use client";
 import { Product } from "@/sanity.types";
 import React from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import QuantityButtons from "./QuantityButtons";
