@@ -15,6 +15,7 @@ const ProductGrid = () => {
   const [loading, setLoading] = useState(false);
   const query = `*[_type == 'product' && variant ==$variant] | order(name asc)`;
   const params = { variant: selectedTab.toLocaleLowerCase() };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -28,7 +29,7 @@ const ProductGrid = () => {
       }
     };
     fetchData();
-  }, [selectedTab]);
+  }, [selectedTab, query, params]);
 
   return (
     <div className="mt-10 flex flex-col items-center">
