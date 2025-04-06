@@ -12,16 +12,23 @@ interface CheckoutFormProps {
   onClose: () => void;
 }
 
+interface FormData {
+  name: string;
+  tel: string;
+  address: string;
+  paymentMethod: string;
+}
+
 const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
   const { getTotalPrice, getSubtotalPrice, getGroupedItems } = useCartStore();
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = React.useState<FormData>({
     name: '',
     tel: '',
     address: '',
     paymentMethod: 'cod'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Here you would typically send the order to your backend
@@ -82,7 +89,7 @@ const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
             <Label>Payment Method</Label>
             <RadioGroup
               defaultValue="cod"
-              onValueChange={(value: any) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
+              onValueChange={(value: string) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
               className="space-y-2"
             >
               <div className="flex items-center space-x-2 border p-3 rounded-md">
