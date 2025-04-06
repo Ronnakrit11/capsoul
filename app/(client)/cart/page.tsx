@@ -29,16 +29,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import paypalLogo from "@/images/paypalLogo.png";
-import {
-  createCheckoutSession,
-  Metadata,
-} from "@/actions/createCheckoutSession";
+import CheckoutForm from "@/components/CheckoutForm";
 
 const CartPage = () => {
   const [isClient, setIsClient] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
   const { isSignedIn } = useAuth();
   const {
     deleteCartProduct,
@@ -49,9 +45,11 @@ const CartPage = () => {
     getGroupedItems,
   } = useCartStore();
   const { user } = useUser();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
+
   if (!isClient) {
     return <Loading />;
   }
@@ -66,26 +64,6 @@ const CartPage = () => {
   const handleDeleteProduct = (id: string) => {
     deleteCartProduct(id);
     toast.success("Product deleted successfully!");
-  };
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    try {
-      const metadata: Metadata = {
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Unknown",
-        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-        clerkUserId: user!.id,
-      };
-      const checkoutUrl = await createCheckoutSession(cartProducts, metadata);
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      }
-    } catch (error) {
-      console.error("Error creating checkout session:", error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -218,23 +196,12 @@ const CartPage = () => {
                         />
                       </div>
                       <Button
-                        disabled={loading}
-                        onClick={handleCheckout}
+                        onClick={() => setShowCheckoutDialog(true)}
                         className="w-full rounded-full font-semibold tracking-wide"
                         size="lg"
                       >
                         Proceed to Checkout
                       </Button>
-                      <Link
-                        href={"/"}
-                        className="flex items-center justify-center py-2 border border-darkColor/50 rounded-full hover:border-darkColor hover:bg-darkColor/5 hoverEffect"
-                      >
-                        <Image
-                          src={paypalLogo}
-                          alt="paypalLogo"
-                          className="w-20"
-                        />
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -264,22 +231,12 @@ const CartPage = () => {
                         />
                       </div>
                       <Button
-                        onClick={handleCheckout}
+                        onClick={() => setShowCheckoutDialog(true)}
                         className="w-full rounded-full font-semibold tracking-wide"
                         size="lg"
                       >
                         Proceed to Checkout
                       </Button>
-                      <Link
-                        href={"/"}
-                        className="flex items-center justify-center py-2 border border-darkColor/50 rounded-full hover:border-darkColor hover:bg-darkColor/5 hoverEffect"
-                      >
-                        <Image
-                          src={paypalLogo}
-                          alt="paypalLogo"
-                          className="w-20"
-                        />
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -293,6 +250,7 @@ const CartPage = () => {
         <NoAccessToCart />
       )}
 
+      {/* Reset Cart Dialog */}
       <Dialog open={showResetDialog} onOpenChange={setShowResetDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -317,6 +275,16 @@ const CartPage = () => {
               Reset Cart
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Checkout Dialog */}
+      <Dialog open={showCheckoutDialog} onOpenChange={setShowCheckoutDialog}>
+        <DialogContent className="sm:max-w-[850px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Checkout</DialogTitle>
+          </DialogHeader>
+          <CheckoutForm onClose={() => setShowCheckoutDialog(false)} />
         </DialogContent>
       </Dialog>
     </div>
