@@ -16,7 +16,7 @@ const Footer = () => {
           <div className="space-y-4">
             <Logo />
             <p className="text-gray-600 text-sm">
-            Where Luxurious Dreams Meet Premium Imported Bedding, Transforming Every Night into an Experience of Pure Comfort and Tranquility&quot;
+            Where Luxurious Dreams Meet Premium Imported Coffee Capsule, Transforming Every Night into an Experience of Pure Comfort and Tranquility&quot;
             </p>
             <SocialMedia
               className="text-darkColor/60"
