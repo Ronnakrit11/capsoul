@@ -3,6 +3,7 @@
 import { backendClient } from "@/sanity/lib/backendClient";
 import { CartItem } from "@/store";
 import crypto from "crypto";
+import { sendOrderNotification } from "@/lib/telegram";
 
 interface OrderData {
   customerName: string;
@@ -67,6 +68,21 @@ export async function createCodOrder(data: OrderData) {
       shippingAddress: data.address,
       phoneNumber: data.tel,
       paymentMethod: "COD",
+    });
+
+    // Send Telegram notification
+    await sendOrderNotification({
+      orderNumber,
+      customerName: data.customerName,
+      email: data.email,
+      tel: data.tel,
+      address: data.address,
+      totalAmount: totalPrice,
+      items: data.items.map(item => ({
+        name: item.product.name || 'Unnamed Product',
+        quantity: item.quantity,
+        price: item.product.price || 0
+      }))
     });
 
     return {
