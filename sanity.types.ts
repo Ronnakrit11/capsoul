@@ -136,7 +136,7 @@ export type Product = {
   }>;
   stock?: number;
   status?: "new" | "hot" | "sale";
-  variant?: "tshirt" | "jacket" | "pants" | "hoodie" | "short" | "others";
+  variant?: "10-capsules" | "80-capsules";
 };
 
 export type Category = {
@@ -262,7 +262,7 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
   }>;
   stock?: number;
   status?: "hot" | "new" | "sale";
-  variant?: "hoodie" | "jacket" | "others" | "pants" | "short" | "tshirt";
+  variant?: "10-capsules" | "80-capsules";
 } | null;
 // Variable: CATEGORIES_QUERY
 // Query: *[_type=="category"] | order(name asc)
@@ -341,7 +341,7 @@ export type MY_ORDERS_QUERYResult = Array<{
       }>;
       stock?: number;
       status?: "hot" | "new" | "sale";
-      variant?: "hoodie" | "jacket" | "others" | "pants" | "short" | "tshirt";
+      variant?: "10-capsules" | "80-capsules";
     } | null;
     quantity?: number;
     _key: string;

@@ -120,7 +120,7 @@ export type Product = {
   }>;
   stock?: number;
   status?: "new" | "hot" | "sale";
-  variant?: "tshirt" | "jacket" | "pants" | "hoodie" | "short" | "others";
+  variant?: "10-capsulesrt" | "jacket" | "pants" | "hoodie" | "short" | "others";
 };
 
 export type Category = {
