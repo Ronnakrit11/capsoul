@@ -1,12 +1,16 @@
-import React from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
-import { Separator } from './ui/separator';
-import PriceFormatter from './PriceFormatter';
-import useCartStore from '@/store';
-import { toast } from 'sonner';
+"use client";
+import React from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Separator } from "./ui/separator";
+import PriceFormatter from "./PriceFormatter";
+import useCartStore from "@/store";
+import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
+import { createCodOrder } from "@/actions/createCodOrder";
+import { useRouter } from "next/navigation";
 
 interface CheckoutFormProps {
   onClose: () => void;
@@ -20,28 +24,57 @@ interface FormData {
 }
 
 const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
-  const { getTotalPrice, getSubtotalPrice, getGroupedItems } = useCartStore();
+  const { getTotalPrice, getSubtotalPrice, getGroupedItems, resetCart } = useCartStore();
+  const { user } = useUser();
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
   const [formData, setFormData] = React.useState<FormData>({
-    name: '',
-    tel: '',
-    address: '',
-    paymentMethod: 'cod'
+    name: "",
+    tel: "",
+    address: "",
+    paymentMethod: "cod",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Here you would typically send the order to your backend
-    // For now we'll just show a success message
-    toast.success('Order placed successfully!');
-    onClose();
+    if (!user) {
+      toast.error("Please sign in to place an order");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (formData.paymentMethod === "cod") {
+        const result = await createCodOrder({
+          customerName: formData.name,
+          email: user.emailAddresses[0].emailAddress,
+          tel: formData.tel,
+          address: formData.address,
+          clerkUserId: user.id,
+          items: getGroupedItems(),
+        });
+
+        if (result.success) {
+          resetCart();
+          router.push(`/success?orderNumber=${result.orderNumber}`);
+          onClose();
+        } else {
+          toast.error("Failed to create order");
+        }
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("An error occurred while placing your order");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -89,22 +122,24 @@ const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
             <Label>Payment Method</Label>
             <RadioGroup
               defaultValue="cod"
-              onValueChange={(value: string) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
+              onValueChange={(value: string) =>
+                setFormData((prev) => ({ ...prev, paymentMethod: value }))
+              }
               className="space-y-2"
             >
               <div className="flex items-center space-x-2 border p-3 rounded-md">
                 <RadioGroupItem value="cod" id="cod" />
                 <Label htmlFor="cod">Cash on Delivery (COD)</Label>
               </div>
-              <div className="flex items-center space-x-2 border p-3 rounded-md">
-                <RadioGroupItem value="promptpay" id="promptpay" />
-                <Label htmlFor="promptpay">PromptPay</Label>
+              <div className="flex items-center space-x-2 border p-3 rounded-md opacity-50 cursor-not-allowed">
+                <RadioGroupItem value="promptpay" id="promptpay" disabled />
+                <Label htmlFor="promptpay">PromptPay (Coming Soon)</Label>
               </div>
             </RadioGroup>
           </div>
 
-          <Button type="submit" className="w-full">
-            Place Order
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Processing..." : "Place Order"}
           </Button>
         </form>
       </div>
@@ -113,12 +148,17 @@ const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
         <h3 className="text-lg font-semibold">Order Summary</h3>
         <div className="space-y-4">
           {getGroupedItems().map(({ product, quantity }) => (
-            <div key={product._id} className="flex justify-between items-center">
+            <div
+              key={product._id}
+              className="flex justify-between items-center"
+            >
               <div>
                 <p className="font-medium">{product.name}</p>
                 <p className="text-sm text-gray-500">Quantity: {quantity}</p>
               </div>
-              <PriceFormatter amount={(product.price || 0) * quantity} />
+              <PriceFormatter
+                amount={(product.price || 0) * quantity}
+              />
             </div>
           ))}
         </div>
@@ -130,7 +170,9 @@ const CheckoutForm = ({ onClose }: CheckoutFormProps) => {
           </div>
           <div className="flex justify-between">
             <span>Discount</span>
-            <PriceFormatter amount={getSubtotalPrice() - getTotalPrice()} />
+            <PriceFormatter
+              amount={getSubtotalPrice() - getTotalPrice()}
+            />
           </div>
           <Separator />
           <div className="flex justify-between font-semibold">
