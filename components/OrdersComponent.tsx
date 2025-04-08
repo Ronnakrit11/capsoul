@@ -12,6 +12,24 @@ import { format } from "date-fns";
 import PriceFormatter from "./PriceFormatter";
 
 import OrderDetailsDialog from "./OrderDetailsDialog";
+
+const getStatusStyle = (status: string) => {
+  switch (status) {
+    case 'shipped':
+      return 'bg-blue-100 text-blue-800';
+    case 'delivered':
+      return 'bg-green-100 text-green-800';
+    case 'cancelled':
+      return 'bg-red-100 text-red-800';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'paid':
+      return 'bg-purple-100 text-purple-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
 const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
   const [selectedOrder, setSelectedOrder] = useState<
     MY_ORDERS_QUERYResult[number] | null
@@ -25,7 +43,7 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
             <Tooltip key={order?.orderNumber}>
               <TooltipTrigger asChild>
                 <TableRow
-                  className=" cursor-pointer hover:bg-gray-100 h-12"
+                  className="cursor-pointer hover:bg-gray-100 h-12"
                   onClick={() => setSelectedOrder(order)}
                 >
                   <TableCell className="font-medium">
@@ -48,7 +66,7 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
                   <TableCell>
                     {order?.status && (
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${order?.status === "paid" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${getStatusStyle(order?.status)}`}
                       >
                         {order?.status}
                       </span>
