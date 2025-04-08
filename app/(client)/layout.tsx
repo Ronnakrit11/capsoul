@@ -13,7 +13,7 @@ const raleway = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Fifty9 Ecommerce platform for shoppers",
+  title: "Capsoul Ecommerce platform for shoppers",
   description: "An Ecommerce platform for elite shoppers",
 };
 

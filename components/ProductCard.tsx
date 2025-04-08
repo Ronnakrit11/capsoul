@@ -14,8 +14,8 @@ const ProductCard = ({ product }: { product: Product }) => {
           <Link href={`/product/${product?.slug?.current}`}>
             <Image
               src={urlFor(product?.images[0]).url()}
-              width={500}
-              height={500}
+              width={900}
+              height={900}
               alt="productImage"
               priority
               className={`w-full h-72 object-contain overflow-hidden hoverEffect ${product?.stock !== 0 && "group-hover:scale-105"}`}

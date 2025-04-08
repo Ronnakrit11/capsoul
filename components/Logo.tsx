@@ -12,7 +12,7 @@ const Logo = ({ className }: Props) => {
     <Link href={"/"}>
       <Image 
         src="/logo.png" 
-        alt="Fifty9 Logo"
+        alt="Capsoul Logo"
         width={1000}
         height={1000}
         className={cn("w-auto h-12 object-contain", className)}
