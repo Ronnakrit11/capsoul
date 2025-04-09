@@ -1,6 +1,6 @@
 export const headerData = [
   { title: "Home", href: "/" },
-  { title: "Men", href: "/men" },
+  { title: "Men", href: "/big" },
   { title: "Woman", href: "/woman" },
   { title: "Kids", href: "/kids" },
   { title: "New", href: "/new" },
@@ -22,12 +22,13 @@ export const quickLinksData = [
 ];
 
 export const categoriesData = [
-  { title: "Men's Fashion", href: "/men" },
-  { title: "Women's Fashion", href: "/women" },
-  { title: "Kids corner", href: "/kids" },
-  { title: "10-capsulesrt", href: "/t-shirt" },
-  { title: "Accessories", href: "/accessories" },
-  { title: "Household", href: "/household" },
+  { title: "Big", href: "/big" },
+  { title: "Small", href: "/small" },
+
+  { title: "10-capsule", href: "/small" },
+  { title: "80-capsule", href: "/big" },
+  
+
   { title: "Others", href: "/others" },
 ];
 export const faqsData = [
