@@ -1,11 +1,10 @@
 export const headerData = [
   { title: "Home", href: "/" },
-  { title: "Men", href: "/big" },
-  { title: "Woman", href: "/woman" },
-  { title: "Kids", href: "/kids" },
-  { title: "New", href: "/new" },
-  { title: "Featured", href: "/featured" },
-  { title: "Gift", href: "/gift" },
+  { title: "ใหญ่", href: "/category/big" },
+  { title: "เล็ก", href: "/category/small" },
+
+  { title: "บทความ", href: "/" },
+  { title: "ติดต่อ", href: "/" },
 ];
 
 export const productType = [
