@@ -9,14 +9,14 @@ interface Props {
 const data: Props[] = [
   {
     title: "Visit Us",
-    subtitle: "Nst , Thailand",
+    subtitle: "Nonthaburi District , Thailand",
     icon: (
       <MapPin className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
   },
   {
     title: "Call Us",
-    subtitle: "+66 ",
+    subtitle: "02-088-0988 ",
     icon: (
       <Phone className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),
