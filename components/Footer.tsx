@@ -53,10 +53,9 @@ const Footer = () => {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold text-darkColor mb-4">Newsletter</h3>
+            <h3 className="font-semibold text-darkColor mb-4">Contact</h3>
             <p className="text-gray-600 text-sm mb-4">
-              Subscribe to our newsletter to receive updates and exclusive
-              offers.
+            T. F. I COFFEE CO., LTD. 340 1 Samakkhi Rd, Tambon Tha Sai, Mueang Nonthaburi District, Chang Wat Nonthaburi 11000
             </p>
             <form className="space-y-3">
               <Input
