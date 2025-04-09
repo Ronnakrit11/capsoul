@@ -74,6 +74,11 @@ const Footer = () => {
             </form>
           </div>
         </div>
+        <div className="py-4 text-center border-t">
+          <p className="text-sm text-gray-600">
+            Copyright © 2025 TFI COFFEE. All rights reserved.
+          </p>
+        </div>
       </Container>
     </footer>
   );
