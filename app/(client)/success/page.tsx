@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { motion } from "motion/react";
 import { Check, Home, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import confetti from "canvas-confetti";
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
@@ -18,6 +19,33 @@ const SuccessPage = () => {
       router.push("/");
     } else {
       resetCart();
+      // Trigger confetti effect
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      const randomInRange = (min: number, max: number) => {
+        return Math.random() * (max - min) + min;
+      };
+
+      const interval: NodeJS.Timeout = setInterval(() => {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50;
+
+        confetti({
+          particleCount,
+          spread: 70,
+          origin: { y: 0.6 },
+          angle: randomInRange(55, 125),
+          colors: ['#4CAF50', '#2196F3', '#FF9800', '#E91E63', '#9C27B0']
+        });
+      }, 250);
+
+      return () => clearInterval(interval);
     }
   }, [orderNumber, resetCart, router]);
 
