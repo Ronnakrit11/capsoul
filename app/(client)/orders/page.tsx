@@ -4,9 +4,10 @@ import OrdersComponent from "@/components/OrdersComponent";
 import Title from "@/components/Title";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileX } from "lucide-react";
+import { FileX, Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MY_ORDERS_QUERYResult } from "@/sanity.types";
@@ -16,6 +17,10 @@ import { getOrders } from "@/actions/getOrders";
 const OrdersPage = () => {
   const [orders, setOrders] = useState<MY_ORDERS_QUERYResult>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState<MY_ORDERS_QUERYResult>([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -23,6 +28,7 @@ const OrdersPage = () => {
         // Initial fetch using server action
         const initialOrders = await getOrders();
         setOrders(initialOrders);
+        setFilteredOrders(initialOrders);
         
         // Subscribe to real-time updates
         const query = `*[_type == 'order' && clerkUserId == $userId] | order(orderDate desc){
@@ -60,6 +66,33 @@ const OrdersPage = () => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    let filtered = [...orders];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (order) =>
+          order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          order.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Date filter
+    if (startDate && endDate) {
+      filtered = filtered.filter((order) => {
+        const orderDate = new Date(order.orderDate || "");
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59); // Include the entire end date
+        return orderDate >= start && orderDate <= end;
+      });
+    }
+
+    setFilteredOrders(filtered);
+  }, [searchTerm, startDate, endDate, orders]);
+
   if (loading) {
     return (
       <Container className="py-10">
@@ -76,6 +109,31 @@ const OrdersPage = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle className="text-2xl md:text-3xl">Order List</CardTitle>
+            <div className="flex flex-col md:flex-row gap-4 mt-4">
+              <div className="flex-1 relative">
+                <Input
+                  placeholder="Search by order number, customer name, or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full md:w-auto"
+                />
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full md:w-auto"
+                />
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <ScrollArea className="w-full">
@@ -95,7 +153,7 @@ const OrdersPage = () => {
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <OrdersComponent orders={orders} />
+                <OrdersComponent orders={filteredOrders} />
                 <ScrollBar orientation="horizontal" />
               </Table>
             </ScrollArea>

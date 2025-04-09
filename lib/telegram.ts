@@ -1,4 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
+import { formatInTimeZone } from 'date-fns-tz';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -30,8 +31,11 @@ export async function sendOrderNotification(orderData: {
   }
 
   try {
+    const currentTime = formatInTimeZone(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    
     const message = `
 🛍 *New Order Received!*
+⏰ *Time:* ${currentTime} (ICT)
 
 *Order Number:* \`${orderData.orderNumber}\`
 *Customer:* ${orderData.customerName}
@@ -42,7 +46,7 @@ export async function sendOrderNotification(orderData: {
 *Items:*
 ${orderData.items.map(item => `• ${item.name} x${item.quantity} ($${item.price})`).join('\n')}
 
-*Total Amount:* $${orderData.totalAmount.toFixed(2)}
+*Total Amount:* ${orderData.totalAmount.toFixed(2)} บาท
 
 *Payment Method:* Cash on Delivery (COD)
 *Status:* Pending

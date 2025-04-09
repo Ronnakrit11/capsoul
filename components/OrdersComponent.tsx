@@ -9,8 +9,8 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import { format } from "date-fns";
+import { formatInTimeZone } from 'date-fns-tz';
 import PriceFormatter from "./PriceFormatter";
-
 import OrderDetailsDialog from "./OrderDetailsDialog";
 
 const getStatusStyle = (status: string) => {
@@ -35,6 +35,12 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
     MY_ORDERS_QUERYResult[number] | null
   >(null);
 
+  const formatThaiTime = (date: string) => {
+    const thaiTime = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'dd/MM/yyyy');
+    const thaiTimeHour = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'h:mm a');
+    return { date: thaiTime, time: thaiTimeHour };
+  };
+
   return (
     <>
       <TableBody>
@@ -50,8 +56,14 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
                     {order.orderNumber?.slice(-10) ?? "N/A"}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {order?.orderDate &&
-                      format(new Date(order.orderDate), "dd/MM/yyyy")}
+                    {order?.orderDate && (
+                      <>
+                        <div>{formatThaiTime(order.orderDate).date}</div>
+                        <div className="text-xs text-gray-500">
+                          {formatThaiTime(order.orderDate).time}
+                        </div>
+                      </>
+                    )}
                   </TableCell>
                   <TableCell>{order?.customerName}</TableCell>
                   <TableCell className="hidden md:table-cell">

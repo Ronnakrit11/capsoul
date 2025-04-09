@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import PriceFormatter from "./PriceFormatter";
+import { formatInTimeZone } from 'date-fns-tz';
 
 interface Props {
   order: MY_ORDERS_QUERYResult[number] | null;
@@ -23,7 +24,12 @@ interface Props {
 
 const OrderDetailsDialog: FC<Props> = ({ order, isOpen, onClose }) => {
   if (!order) return null;
-  console.log(order);
+
+  const formatThaiTime = (date: string) => {
+    const thaiDate = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'dd/MM/yyyy');
+    const thaiTime = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'h:mm a');
+    return `${thaiDate} at ${thaiTime}`;
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -40,8 +46,7 @@ const OrderDetailsDialog: FC<Props> = ({ order, isOpen, onClose }) => {
           </p>
           <p>
             <strong>Date:</strong>{" "}
-            {order?.orderDate &&
-              new Date(order?.orderDate).toLocaleDateString()}
+            {order?.orderDate && formatThaiTime(order.orderDate)}
           </p>
           <p>
             <strong>Status:</strong>{" "}
@@ -84,7 +89,7 @@ const OrderDetailsDialog: FC<Props> = ({ order, isOpen, onClose }) => {
                     />
                   )}
                   {product?.product && (
-                    <p className=" line-clamp-1">{product?.product?.name}</p>
+                    <p className="line-clamp-1">{product?.product?.name}</p>
                   )}
                 </TableCell>
                 <TableCell>{product?.quantity}</TableCell>
