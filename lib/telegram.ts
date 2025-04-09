@@ -35,7 +35,7 @@ export async function sendOrderNotification(orderData: {
     
     const message = `
 🛍 *New Order Received!*
-⏰ *Time:* ${currentTime} (ICT)
+⏰ *Time:* ${currentTime} 
 
 *Order Number:* \`${orderData.orderNumber}\`
 *Customer:* ${orderData.customerName}
