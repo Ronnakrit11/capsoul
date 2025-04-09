@@ -4,7 +4,7 @@ export const headerData = [
   { title: "เล็ก", href: "/category/small" },
 
   { title: "บทความ", href: "/" },
-  { title: "ติดต่อ", href: "/" },
+  { title: "ติดต่อ", href: "/contact" },
 ];
 
 export const productType = [
