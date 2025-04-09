@@ -1,4 +1,3 @@
-"use client";
 import { MY_ORDERS_QUERYResult } from "@/sanity.types";
 import React, { useState } from "react";
 import { TableBody, TableCell, TableRow } from "./ui/table";
@@ -8,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-
+import { format, parseISO } from "date-fns";
 import { formatInTimeZone } from 'date-fns-tz';
 import PriceFormatter from "./PriceFormatter";
 import OrderDetailsDialog from "./OrderDetailsDialog";
@@ -35,10 +34,12 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
     MY_ORDERS_QUERYResult[number] | null
   >(null);
 
-  const formatThaiTime = (date: string) => {
-    const thaiTime = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'dd/MM/yyyy');
-    const thaiTimeHour = formatInTimeZone(new Date(date), 'Asia/Bangkok', 'h:mm a');
-    return { date: thaiTime, time: thaiTimeHour };
+  const formatThaiTime = (dateStr: string) => {
+    const date = parseISO(dateStr);
+    return {
+      date: formatInTimeZone(date, 'Asia/Bangkok', 'dd/MM/yyyy'),
+      time: formatInTimeZone(date, 'Asia/Bangkok', 'h:mm a')
+    };
   };
 
   return (
@@ -53,7 +54,16 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
                   onClick={() => setSelectedOrder(order)}
                 >
                   <TableCell className="font-medium">
-                    {order.orderNumber?.slice(-10) ?? "N/A"}
+                    <div>{order.orderNumber?.slice(-10) ?? "N/A"}</div>
+                    <div className="md:hidden text-xs text-gray-500">
+                      {order?.orderDate && (
+                        <>
+                          {formatThaiTime(order.orderDate).date}
+                          <span className="mx-1">•</span>
+                          {formatThaiTime(order.orderDate).time}
+                        </>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {order?.orderDate && (
@@ -66,7 +76,7 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
                     )}
                   </TableCell>
                   <TableCell>{order?.customerName}</TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden sm:table-cell">
                     {order?.email}
                   </TableCell>
                   <TableCell>
@@ -84,7 +94,7 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
                       </span>
                     )}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden sm:table-cell">
                     {order?.invoice && (
                       <p>{order?.invoice ? order?.invoice?.number : "----"}</p>
                     )}
