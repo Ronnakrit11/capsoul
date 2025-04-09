@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { format } from "date-fns";
+
 import { formatInTimeZone } from 'date-fns-tz';
 import PriceFormatter from "./PriceFormatter";
 import OrderDetailsDialog from "./OrderDetailsDialog";
