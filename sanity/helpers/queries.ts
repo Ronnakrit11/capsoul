@@ -29,7 +29,21 @@ export const getAllCategories = async () => {
     return categories.data || [];
   } catch (error) {
     console.error("Error fetching all categories");
+    return [];
+  }
+};
 
+export const getActiveBanners = async () => {
+  const BANNERS_QUERY = defineQuery(
+    `*[_type == "banner" && isActive == true] | order(order asc)`
+  );
+  try {
+    const banners = await sanityFetch({
+      query: BANNERS_QUERY,
+    });
+    return banners.data || [];
+  } catch (error) {
+    console.error("Error fetching banners:", error);
     return [];
   }
 };
