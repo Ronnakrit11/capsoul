@@ -70,3 +70,18 @@ export const getMyOrders = async (userId: string) => {
     return [];
   }
 };
+
+export const getLatestBlogs = async () => {
+  const LATEST_BLOGS_QUERY = defineQuery(
+    `*[_type == "blog"] | order(publishedAt desc)[0...3]`
+  );
+  try {
+    const blogs = await sanityFetch({
+      query: LATEST_BLOGS_QUERY,
+    });
+    return blogs.data || [];
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return [];
+  }
+};

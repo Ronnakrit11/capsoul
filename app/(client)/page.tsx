@@ -2,10 +2,12 @@ import Container from "@/components/Container";
 import HomeBanner from "@/components/HomeBanner";
 import ProductGrid from "@/components/ProductGrid";
 import BannerSlider from "@/components/BannerSlider";
-import { getActiveBanners } from "@/sanity/helpers/queries";
+import BlogSection from "@/components/BlogSection";
+import { getActiveBanners, getLatestBlogs } from "@/sanity/helpers/queries";
 
 export default async function Home() {
   const banners = await getActiveBanners();
+  const blogs = await getLatestBlogs();
 
   return (
     <div>
@@ -15,6 +17,7 @@ export default async function Home() {
           <HomeBanner />
           <ProductGrid />
         </div>
+        <BlogSection blogs={blogs} />
       </Container>
     </div>
   );
