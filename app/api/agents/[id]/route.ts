@@ -3,10 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   request: NextRequest,
-  context: { params: { id: string } }
+  response: NextResponse,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = context.params;
+    const { id } = params;
     const { status } = await request.json();
 
     const updatedAgent = await prisma.agent.update({
