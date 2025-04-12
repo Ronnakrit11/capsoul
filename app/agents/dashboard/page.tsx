@@ -23,7 +23,7 @@ export default function AgentDashboard() {
         }
         const data = await response.json();
         setAgent(data);
-      } catch (error) {
+      } catch {
         router.push("/agents/login");
       } finally {
         setLoading(false);
@@ -65,7 +65,6 @@ export default function AgentDashboard() {
                   </p>
                 </div>
               </div>
-              {/* Add more dashboard sections here */}
             </div>
           </div>
         </div>

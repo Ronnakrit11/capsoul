@@ -3,12 +3,13 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 interface Blog {
   _id: string;
   title?: string;
   slug?: { current?: string };
-  image?: any;
+  image?: SanityImageSource;
   excerpt?: string;
   publishedAt?: string;
 }

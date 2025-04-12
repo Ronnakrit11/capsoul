@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 export async function GET() {
   try {
-    const token = cookies().get("agent_token")?.value;
+    const token = (await cookies()).get("agent_token")?.value;
 
     if (!token) {
       return NextResponse.json(
@@ -35,7 +35,7 @@ export async function GET() {
     }
 
     return NextResponse.json(agent);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Not authenticated" },
       { status: 401 }

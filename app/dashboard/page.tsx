@@ -10,10 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 
 interface Agent {
   id: string;
@@ -37,7 +37,7 @@ export default function DashboardPage() {
       const response = await fetch("/api/agents");
       const data = await response.json();
       setAgents(data);
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch agents");
     } finally {
       setLoading(false);
@@ -64,7 +64,7 @@ export default function DashboardPage() {
       ));
 
       toast.success(`Agent ${newStatus.toLowerCase()} successfully`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update agent status");
     }
   };

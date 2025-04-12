@@ -1,16 +1,17 @@
 "use client";
 import { urlFor } from "@/sanity/lib/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 interface Banner {
   _id: string;
   title?: string;
   subtitle?: string;
-  image?: any;
+  image?: SanityImageSource;
   buttonText?: string;
   buttonLink?: string;
 }
@@ -22,22 +23,24 @@ interface Props {
 const BannerSlider = ({ banners }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? banners.length - 1 : prevIndex - 1
     );
-  };
+  }, [banners.length]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentIndex((prevIndex) =>
       prevIndex === banners.length - 1 ? 0 : prevIndex + 1
     );
-  };
+  }, [banners.length]);
 
   useEffect(() => {
+    if (banners.length <= 1) return;
+    
     const interval = setInterval(handleNext, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [handleNext, banners.length]);
 
   if (!banners.length) return null;
 
