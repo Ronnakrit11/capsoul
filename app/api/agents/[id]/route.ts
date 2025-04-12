@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   request: NextRequest,
-  response: NextResponse,
   { params }: { params: { id: string } }
 ) {
   try {
