@@ -1,32 +1,12 @@
-import { NextResponse } from "next/server";
-import { ClerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { getAuth } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// Admin middleware to check if user is admin
-function isAdmin(email: string | null) {
-  return email === "ronnakritnook1@gmail.com";
-}
-
-// Create a matcher for the dashboard route
-const dashboardMatcher = createRouteMatcher(["/dashboard(.*)"]);
-
-const middleware: ClerkMiddleware = async (request) => {
-  const auth = getAuth(request);
-  const email = auth.user?.emailAddresses[0]?.emailAddress;
-
-  // Check if trying to access dashboard
-  if (dashboardMatcher(request)) {
-    if (!auth.userId || !isAdmin(email)) {
-      // Redirect to home if not admin
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  }
-
-  return NextResponse.next();
-};
-
-export default middleware;
+export default clerkMiddleware();
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };
