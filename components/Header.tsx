@@ -10,6 +10,7 @@ import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ListOrdered } from "lucide-react";
 import { getAllCategories, getMyOrders } from "@/sanity/helpers/queries";
+import AgentRegistrationButton from "./AgentRegistrationButton";
 
 const Header = async () => {
   const user = await currentUser();
@@ -28,6 +29,7 @@ const Header = async () => {
           <Logo />
         </div>
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
+          <AgentRegistrationButton />
           <SearchBar />
           <CartIcon />
 

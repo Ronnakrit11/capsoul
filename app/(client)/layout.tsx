@@ -61,10 +61,10 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${raleway.variable} antialiased`}>
+      <html lang="en" className={raleway.variable}>
+        <body className="antialiased">
           <Header />
-          {children}
+          <main>{children}</main>
           <Footer />
           <Toaster position="bottom-right" theme="dark" />
         </body>
