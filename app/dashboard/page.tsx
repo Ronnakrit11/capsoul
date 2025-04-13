@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Agent {
   id: string;
@@ -27,10 +29,19 @@ interface Agent {
 export default function DashboardPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    // Check if user is authenticated
+    const isAuthenticated = Cookies.get("dashboard_auth") === "true";
+    
+    if (!isAuthenticated) {
+      router.push("/dashboard/login");
+      return;
+    }
+    
     fetchAgents();
-  }, []);
+  }, [router]);
 
   const fetchAgents = async () => {
     try {
@@ -69,6 +80,12 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = () => {
+    Cookies.remove("dashboard_auth", { path: "/" });
+    router.push("/dashboard/login");
+    toast.success("Logged out successfully");
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "PENDING":
@@ -96,7 +113,10 @@ export default function DashboardPage() {
     <Container className="py-10">
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
         <div className="p-6 flex flex-col gap-4">
-          <h2 className="text-2xl font-bold">รายการตัวแทนจำหน่าย</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">รายการตัวแทนจำหน่าย</h2>
+            <Button onClick={handleLogout} variant="outline">Logout</Button>
+          </div>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
