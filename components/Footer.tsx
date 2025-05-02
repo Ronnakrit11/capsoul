@@ -55,7 +55,7 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-darkColor mb-4">Contact</h3>
             <p className="text-gray-600 text-sm mb-4">
-            T. F. I COFFEE CO., LTD. 340 1 Samakkhi Rd, Tambon Tha Sai, Mueang Nonthaburi District, Chang Wat Nonthaburi 11000
+            NEXT BIS CORPORATION CO., LTD. 170/51 , Tambon Tha Sak, Mueang Nakhon Si Thammarat District , 80000
             </p>
             <form className="space-y-3">
               <Input
