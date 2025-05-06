@@ -86,6 +86,9 @@ importers:
       date-fns-tz:
         specifier: ^2.0.0
         version: 2.0.1(date-fns@2.30.0)
+      deepseek-api:
+        specifier: ^1.0.0
+        version: 1.0.6
       eslint-plugin-react-hooks:
         specifier: 4.6.0
         version: 4.6.0(eslint@9.24.0(jiti@1.21.7))
@@ -3457,6 +3460,9 @@ packages:
 
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
+
+  deepseek-api@1.0.6:
+    resolution: {integrity: sha512-hGySKX5XpSGyWgl8SivgD4SJPUISZSaMYHPtVE9Luyerr5HITgcDJyKG5yRMo9Iota3Ec8qrbXD540kc/lTfDw==}
 
   defaults@1.0.4:
     resolution: {integrity: sha512-eFuaLoy/Rxalv2kr+lqMlUnrDWV+3j4pljOIJgLIhI058IQfWJ7vXhyEIHu+HtC738klGALYxOKDO0bQP3tg8A==}
@@ -10142,6 +10148,8 @@ snapshots:
   deeks@3.1.0: {}
 
   deep-is@0.1.4: {}
+
+  deepseek-api@1.0.6: {}
 
   defaults@1.0.4:
     dependencies:
