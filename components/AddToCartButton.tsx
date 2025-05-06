@@ -46,7 +46,7 @@ const AddToCartButton = ({ product, className }: Props) => {
             className
           )}
         >
-          Add to cart
+        ใส่ตะกร้า
         </Button>
       )}
     </div>
