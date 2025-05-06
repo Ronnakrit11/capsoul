@@ -32,14 +32,19 @@ interface DeepseekConfig {
   export class DeepseekAPI {
     private apiKey: string;
     private endpoint: string;
+    private timeout: number;
   
     constructor(config: DeepseekConfig) {
       this.apiKey = config.apiKey;
       this.endpoint = config.endpoint || 'https://api.deepseek.com/v1';
+      this.timeout = 25000; // 25 second timeout
     }
   
     async generateWithRAG({ query, context, options = {} }: RAGRequest): Promise<string> {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+  
         const response = await fetch(`${this.endpoint}/chat/completions`, {
           method: 'POST',
           headers: {
@@ -60,7 +65,10 @@ interface DeepseekConfig {
             ],
             ...options
           }),
+          signal: controller.signal
         });
+  
+        clearTimeout(timeoutId);
   
         if (!response.ok) {
           throw new Error(`Deepseek API error: ${response.statusText}`);
@@ -69,6 +77,9 @@ interface DeepseekConfig {
         const data = await response.json() as DeepseekResponse;
         return data.choices[0].message.content;
       } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
         console.error('Deepseek API Error:', error);
         throw error;
       }

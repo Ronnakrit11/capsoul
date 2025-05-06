@@ -16,17 +16,20 @@ interface ProductResponse {
   }>;
 }
 
-// Initialize Deepseek API with your configuration
 const deepseek = new DeepseekAPI({
   apiKey: process.env.DEEPSEEK_API_KEY!,
   endpoint: process.env.DEEPSEEK_ENDPOINT
 });
 
+export const maxDuration = 300; // Set max duration to 5 minutes
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
-    // Fetch relevant products from Sanity
+    // Add timeout to Sanity query
     const query = `*[_type == "product"] {
       _id,
       name,
@@ -36,30 +39,41 @@ export async function POST(req: Request) {
       stock,
       "imageUrl": images[0].asset->url
     }`;
-    const products = await client.fetch<ProductResponse[]>(query);
+    
+    const products = await Promise.race([
+      client.fetch<ProductResponse[]>(query),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout')), 10000)
+      )
+    ]) as ProductResponse[];
 
-    // Create context for RAG
     const context = products.map((product) => ({
       text: `${product.name}: ${product.description}. Price: $${product.price}. Variant: ${product.variant}. Stock: ${product.stock}`,
       metadata: { id: product._id }
     }));
 
-    // Get response from Deepseek with RAG
-    const response = await deepseek.generateWithRAG({
-      query: message,
-      context: context,
-      options: {
-        temperature: 0.7,
-        max_tokens: 500
-      }
-    });
+    // Add timeout to Deepseek API call
+    const response = await Promise.race([
+      deepseek.generateWithRAG({
+        query: message,
+        context: context,
+        options: {
+          temperature: 0.7,
+          max_tokens: 500
+        }
+      }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('AI response timeout')), 25000)
+      )
+    ]);
 
     return NextResponse.json({ response });
   } catch (error) {
     console.error('Chat API Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: error instanceof Error && error.message.includes('timeout') ? 504 : 500 }
     );
   }
 }
