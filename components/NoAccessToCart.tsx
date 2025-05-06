@@ -24,12 +24,12 @@ const NoAccessToCart = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p>
-            Log in to view your cart items and checkout. Don&apos;t miss out on
-            your favorite products!
+            เข้าสู่ระบบเพื่อเข้าถึงตะกร้าสินค้าของคุณและเริ่มช้อปปิ้ง
+            
           </p>
           <SignInButton mode="modal">
             <Button className="w-full font-semibold" size="lg">
-              Sign in
+             เข้าสู่ระบบ
             </Button>
           </SignInButton>
         </CardContent>
@@ -37,7 +37,7 @@ const NoAccessToCart = () => {
           <div>Don&apos;t have an account?</div>
           <SignUpButton mode="modal">
             <Button variant="outline" className="w-full" size="lg">
-              Create an account
+              สร้างบัญชีผู้ใช้
             </Button>
           </SignUpButton>
         </CardFooter>
