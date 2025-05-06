@@ -2,6 +2,20 @@ import { NextResponse } from 'next/server';
 import { client } from '@/sanity/lib/client';
 import { DeepseekAPI } from '@/lib/deepseek';
 
+interface ProductResponse {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  variant: string;
+  stock: number;
+  images: Array<{
+    asset: {
+      url: string;
+    };
+  }>;
+}
+
 // Initialize Deepseek API with your configuration
 const deepseek = new DeepseekAPI({
   apiKey: process.env.DEEPSEEK_API_KEY!,
@@ -14,6 +28,7 @@ export async function POST(req: Request) {
 
     // Fetch relevant products from Sanity
     const query = `*[_type == "product"] {
+      _id,
       name,
       description,
       price,
@@ -21,10 +36,10 @@ export async function POST(req: Request) {
       stock,
       "imageUrl": images[0].asset->url
     }`;
-    const products = await client.fetch(query);
+    const products = await client.fetch<ProductResponse[]>(query);
 
     // Create context for RAG
-    const context = products.map((product: any) => ({
+    const context = products.map((product) => ({
       text: `${product.name}: ${product.description}. Price: $${product.price}. Variant: ${product.variant}. Stock: ${product.stock}`,
       metadata: { id: product._id }
     }));

@@ -12,13 +12,21 @@ interface DeepseekConfig {
   
   interface RAGContext {
     text: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }
   
   interface RAGRequest {
     query: string;
     context: RAGContext[];
     options?: RAGOptions;
+  }
+  
+  interface DeepseekResponse {
+    choices: Array<{
+      message: {
+        content: string;
+      };
+    }>;
   }
   
   export class DeepseekAPI {
@@ -58,7 +66,7 @@ interface DeepseekConfig {
           throw new Error(`Deepseek API error: ${response.statusText}`);
         }
   
-        const data = await response.json();
+        const data = await response.json() as DeepseekResponse;
         return data.choices[0].message.content;
       } catch (error) {
         console.error('Deepseek API Error:', error);
