@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
+import { faqResponses } from '@/lib/faq';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -38,17 +39,22 @@ export default function ChatBot() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // Abort previous request if it exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
     const userMessage = input.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
-    // Create new AbortController for this request
+    // Check if the question exists in FAQ
+    const faqAnswer = faqResponses[userMessage as keyof typeof faqResponses];
+    
+    if (faqAnswer) {
+      // If it's a FAQ, respond immediately
+      setMessages(prev => [...prev, { role: 'assistant', content: faqAnswer }]);
+      setIsLoading(false);
+      return;
+    }
+
+    // If not a FAQ, proceed with API call
     abortControllerRef.current = new AbortController();
 
     try {
@@ -88,6 +94,14 @@ export default function ChatBot() {
     }
   };
 
+  const handleFaqClick = (question: string) => {
+    setMessages(prev => [
+      ...prev,
+      { role: 'user', content: question },
+      { role: 'assistant', content: faqResponses[question as keyof typeof faqResponses] }
+    ]);
+  };
+
   return (
     <>
       <button
@@ -109,33 +123,50 @@ export default function ChatBot() {
             </button>
           </div>
 
-          <div className="h-96 overflow-y-auto p-4 space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
-              >
+          <div className="h-96 overflow-y-auto p-4">
+            <div className="space-y-4">
+              {/* FAQ Buttons - Always visible */}
+              <div className="space-y-2 mb-4 bg-gray-50 p-3 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">คำถามที่พบบ่อย:</p>
+                {Object.keys(faqResponses).map((question) => (
+                  <button
+                    key={question}
+                    onClick={() => handleFaqClick(question)}
+                    className="w-full text-left p-2 text-sm rounded-lg hover:bg-white transition-colors"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+
+              {/* Chat Messages */}
+              {messages.map((message, index) => (
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === 'user'
-                      ? 'bg-darkColor text-white'
-                      : 'bg-gray-100 text-gray-800'
+                  key={index}
+                  className={`flex ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
                   }`}
                 >
-                  {message.content}
+                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.role === 'user'
+                        ? 'bg-darkColor text-white'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {message.content}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg p-3">
-                  <Loader2 className="h-5 w-5 animate-spin" />
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 rounded-lg p-3">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  </div>
                 </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+              )}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="p-4 border-t">
@@ -143,7 +174,7 @@ export default function ChatBot() {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about our products..."
+                placeholder="Type your message..."
                 className="flex-1"
               />
               <Button type="submit" disabled={isLoading}>
